@@ -1,3 +1,5 @@
+type ValidationMethod = 'regex' | 'vanilla';
+
 /**
  * Checks if a given password is valid based on specific criteria.
  * 
@@ -9,27 +11,68 @@
  * - Contain at least one underscore.
  * 
  * @param password - The password string to validate.
- * @returns True if the password meets all criteria, otherwise false.
+ * @param method - Specifies 'regex' for regex-based checks, or 'vanilla' for non-regex checks.
+ * @returns True if the password meets all criteria based on the specified method, otherwise false.
  */
-export const isPasswordValid = (password: string): boolean => {
-    
-    // TODO: Consider the max length of the password?
-    // TODO: Consider trimming the input string?
-    if (!password || password.length <= 8) {
-        return false;
-    }
+export const isPasswordValid = (password: string, method: ValidationMethod = 'vanilla'): boolean => {
 
-    // REGEX implementation
-    // possibly need to consider Expression Denial of Service (ReDoS) attacks but maybe this is ok?
-    const hasCapitalLetter = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasUnderscore = /_/.test(password);
+  const checks = {
+    regex: [
+      hasValidLength,
+      containsCapitalLetterRegex,
+      containsLowercaseLetterRegex,
+      containsNumberRegex,
+      containsUnderscoreRegex,
+    ],
+    vanilla: [
+      hasValidLength,
+      hasCapitalLetter,
+      hasLowercase,
+      hasNumber,
+      hasUnderscore,
+    ],
+  };
+
+  const validationFunctions = checks[method];
   
-    return (
-      hasCapitalLetter &&
-      hasLowercase &&
-      hasNumber &&
-      hasUnderscore
-    );
+  return (validationFunctions.every((check) => check(password)));
+};
+
+// Helper functions for validation checks
+
+// Length check
+export const hasValidLength = (password: string): boolean => {
+  return password.length > 8;
+};
+
+// Regex-based helper functions
+export const containsCapitalLetterRegex = (password: string): boolean => /[A-Z]/.test(password);
+export const containsLowercaseLetterRegex = (password: string): boolean => /[a-z]/.test(password);
+export const containsNumberRegex = (password: string): boolean => /[0-9]/.test(password);
+export const containsUnderscoreRegex = (password: string): boolean => /_/.test(password);
+
+// Vanilla helper functions
+export const hasCapitalLetter = (password: string): boolean => {
+  for (const char of password) {
+    if (char >= 'A' && char <= 'Z') return true;
   }
+  return false;
+};
+
+export const hasLowercase = (password: string): boolean => {
+  for (const char of password) {
+    if (char >= 'a' && char <= 'z') return true;
+  }
+  return false;
+};
+
+export const hasNumber = (password: string): boolean => {
+  for (const char of password) {
+    if (char >= '0' && char <= '9') return true;
+  }
+  return false;
+};
+
+export const hasUnderscore = (password: string): boolean => {
+  return password.includes('_');
+};
