@@ -1,2 +1,18 @@
 # pwd-validator
-A repo to give an example of password validation in Typescript
+A simple example of password validation in Typescript
+
+
+## Getting started
+```console
+pnpm install
+```
+
+```console
+pnpm test
+``` 
+
+```
+pnpm build
+```
+## Contributing
+
