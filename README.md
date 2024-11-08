@@ -1,7 +1,6 @@
 # pwd-validator
 A simple example of password validation in Typescript
 
-
 ## Getting started
 ```console
 pnpm install
@@ -11,8 +10,5 @@ pnpm install
 pnpm test
 ``` 
 
-```
-pnpm build
-```
-## Contributing
+
 
